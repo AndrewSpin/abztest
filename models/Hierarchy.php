@@ -70,4 +70,26 @@ class Hierarchy extends \yii\db\ActiveRecord
             ->asArray()
             ->one()['chief_user_id'];
     }
+
+    public static function setNewChief($user_id, $chief_id)
+    {
+        $chief = Hierarchy::find()
+            ->select('*')
+            ->where('subordinate_user_id = ' . $user_id)
+            ->one();
+
+
+
+        if($chief == null){
+            $chief = new Hierarchy();
+            $chief->subordinate_user_id = $user_id;
+
+        }
+
+
+        $chief->chief_user_id = $chief_id;
+
+        return $chief->save();
+
+    }
 }

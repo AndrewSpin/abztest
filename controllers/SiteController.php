@@ -130,9 +130,11 @@ class SiteController extends Controller
         $user->chief = Hierarchy::getChiefId($user->id);
 
         if(Yii::$app->request->post('User') != null){
-
-            $user->load(Yii::$app->request->post('User'));
+            $user->load(Yii::$app->request->post());
             $user->uploadImage();
+
+            Hierarchy::setNewChief($user->id, Yii::$app->request->post('User')['chief']);
+            $user->chief = Yii::$app->request->post('User')['chief'];
 
             if(Yii::$app->request->post('User')['pass'] != null){
                 $user->password = User::encrypt($user->pass);
@@ -152,7 +154,7 @@ class SiteController extends Controller
         return $this->render('edit', [
             'model' => $user,
             'position' => Position::getPositionList(),
-            'users' => User::getUsersList(),
+            'users' => array_merge(['' => 'Please select'], User::getUsersList()),
         ]);
     }
 
@@ -167,6 +169,7 @@ class SiteController extends Controller
             $user->uploadImage();
 
             if($user->save()){
+                Hierarchy::setNewChief($user->id, Yii::$app->request->post('User')['chief']);
                 Yii::$app->session->setFlash('success', 'User is added');
             }else{
                 $error_str = '';
