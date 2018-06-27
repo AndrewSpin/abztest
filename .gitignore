@@ -33,7 +33,7 @@ tests/_support/_generated
 /.vagrant
 
 /runtime
-/assets/*
+web/assets/*
 /config/db.php
 /config/test.php
 /config/test_db.php
